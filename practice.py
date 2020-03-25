@@ -84,6 +84,7 @@
 #
 # for k,v in info.items():
 #     print(k,v)
+# dic = {'k1':'v1','k2':'v2','k3':'v3'}
 # v1 = dic.get('k1')
 # v2 = dic.get('k4')
 # v3 = dic.get('k4','no k4')
@@ -255,4 +256,34 @@
 #     print(kwargs)
 # test(1,2,3,4,5,'a',[1,2,['x']],name1 = 'alawn',name2 = 'quiana')
 
- 
+def aaa():
+     print('alawn')
+     bbb()
+def bbb():
+     print('quiana')
+aaa()
+
+def calc(n):
+     print(n)
+     if int(n/2 == 0):
+          return n
+     return calc(int(n/2))
+calc(10)
+
+
+person_list = ['quiana','kevin','jimmy','alawn']
+def ask_way(person_list):
+     print('-'*60)
+     if len(person_list) == 0:
+          return 'nobody knows'
+     person = person_list.pop(0)
+     if person == 'alawn':
+          return '%s knows'%(person)
+     print('HI,%s,can you tell me'%person)
+     print("%s say:sorry,i don't know,I can help you to ask %s" %(person,person_list))
+     print('--%s--tell me,%s knows'%(person,person_list))
+     res = ask_way(person_list)
+     print('%s say: %s' %(person,res))
+     return res
+RES = ask_way(person_list)
+print(RES)
