@@ -1,15 +1,3 @@
-# import os,time
-# from IPy import IP
-# network = input('network:')
-# for ip in IP(network):
-#     res = os.system('ping -n 2 -w 5 %s'%ip)
-#     with open('C:/Users/alawn/Desktop/res.txt','a+') as file:
-#         if res == 0:
-#             file.write(str(ip)+'在用'+'\n')
-#         else:
-#             pass
-
-
 import re
 import subprocess
 from io import StringIO
