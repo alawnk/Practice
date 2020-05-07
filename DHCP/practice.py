@@ -17,7 +17,6 @@
 #     else:
 #         continue
 #
-#
 # while True:
 #     count = 1
 #     while count < 6:
@@ -110,11 +109,148 @@
 # P_S.update(L_S)
 # print(P_S)
 
-flo = 'number: %f' %99.12567
-flo2 = 'number: %.2f' %99.12567
-print (flo,flo2)
+# flo1 = 'number: %f' %99.12567
+# flo2 = 'number: %.2f' %99.12567
+# #打印百分比
+# flo3 = 'number: %.2f%%'%99.12567
+# print (flo1,flo2,flo3)
+
+# temp1 = 'i am %(name)s, i am %(sex)s,%(age)d'%{'age':30,'sex':'male','name':'alawn'}
+# print(temp)
+
+# temp2 = 'i am {},age{},sex{}'.format('alawn',18,'male')
+# temp3 = 'i am {0},age{1},sex{2}'.format('alawn',18,'male')
+# temp4 = 'i am {2},age{0},sex{1}'.format('alawn',18,'male')
+# print(temp1)
+# print(temp2)
+# print(temp3)
+#
+# 非字典效果==字典效果
+# temp5 = 'i am {name},age {age},sex {sex}'.format(name='alawn',age=18,sex='male')
+# temp6 = 'i am {name},age {age},sex {sex}'.format(**{'name':'alawn','age':18,'sex':'male'})
+# print(temp1)
+# print(temp2)
+#
+# temp7 = 'i am {:s},age {:d},sex {:f}'.format('alawn',30,13.333)
+# temp8 = 'i am {:s},age {:d}'.format(*['alawn',18])
+# temp9 = 'i am {name:s},age {age:d}'.format(name='alawn',age= 30)
+# temp10 = 'i am {name:s},age {age:d}'.format(**{'name':'alawn','age': 30})
+# temp11 = 'numbers:{:b},{:o},{:d},{:x},{:X},{:%}'.format(15,15,15,15,15,15.786,2)
+# temp12 = 'numbers:{0:b},{0:o},{0:d},{0:x},{0:%}'.format(15)
+# temp13 = 'numbers:{num:b},{num:o},{num:d},{num:x},{num:%}'.format(num=15)
+#
+# print(temp1)
+# print(temp2)
+# print(temp3)
+# print(temp4)
+# print(temp5)
+# print(temp6)
+# print(temp7)
+
+# temp1 = 'i am %(name)s, i am %(sex)s,%(age)d'%{'age':30,'sex':'male','name':'alawn'}
+# temp2 = 'i am {},age{},sex{}'.format('alawn',18,'male')
+# temp3 = 'i am {0},age{1},sex{2}'.format('alawn',18,'male')
+# temp4 = 'i am {2},age{0},sex{1}'.format('alawn',18,'male')
+# temp5 = 'i am {name},age {age},sex {sex}'.format(name='alawn',age=18,sex='male')
+# temp6 = 'i am {name},age {age},sex {sex}'.format(**{'name':'alawn','age':18,'sex':'male'})
+# temp7 = 'i am {:s},age {:d},sex {:f}'.format('alawn',30,13.333)
+# temp8 = 'i am {:s},age {:d}'.format(*['alawn',18])
+# temp9 = 'i am {name:s},age {age:d}'.format(name='alawn',age= 30)
+# temp10 = 'i am {name:s},age {age:d}'.format(**{'name':'alawn','age': 30})
+# temp11 = 'numbers:{:b},{:o},{:d},{:x},{:X},{:%}'.format(15,15,15,15,15,15.786,2)
+# temp12 = 'numbers:{0:b},{0:o},{0:d},{0:x},{0:%}'.format(15)
+# temp13 = 'numbers:{num:b},{num:o},{num:d},{num:x},{num:%}'.format(num=15)
+
+# temp6 = 'i am {name},age {age},sex {sex}'.format(**{'name':'alawn','age':18,'sex':'male'})
+# dic = {'name':'alawn','age':18,'sex':'male'}
+# temp7 = 'i am {name},age {age},sex {sex}'.format(**dic)
+# print(temp6)
+# print(temp7)
+
+# def test(x):
+#     y = 2*x+1
+#     return y
+# print(test)
+# a = test(3)
+# print(a)
+#
+# def test():
+#     x = 3
+#     y= 2*x+1
+#     return y
+# a= test()
+# print(a)
+
+# while True:
+#     if CPU利用率>90%:
+#         #发送告警邮件
+#         连接邮箱服务器
+#         发送邮件
+#         关闭连接
+#
+#     if 磁盘空间>90%:
+#         #发送告警邮件
+#         连接邮箱服务器
+#         发送邮件
+#         关闭连接
+#
+#     if 内存占用>90%:
+#         #发送告警邮件
+#         连接邮箱服务器
+#         发送邮件
+#         关闭连接
+#
+# 可转换为以下方式：
+#
+# def 发送邮件(内容):
+#     # 发送告警邮件
+#     连接邮箱服务器
+#     发送邮件
+#     关闭连接
+#
+# while True:
+#     if CPU利用率>90%:
+#         发送邮件('CPU告警')
+#     if 磁盘空间>90%:
+#         发送邮件('磁盘告警')
+#     if 内存占用>90%:
+#         发送邮件('内存告警')
 
 
+# def test1():
+#     msg = 'hello world!'
+#     print(msg)
+#
+# def test2():
+#     msg = 'hello world!!'
+#     print(msg)
+#     return msg
+#
+# def test3():
+#     msg = 'hello world!!!'
+#     print(msg)
+#     return 1,'a',True,None,[1,2,3],{'name':'alawn'},(1,'a',True)
+#
+# t1 = test1()
+# t2 = test2()
+# t3 = test3()
+# print(t1)
+# print(t2)
+# print(t3)
 
+# def test(x,y,z):
+#     print(x,y,z)
+# test(1,2,z=3)
 
+# def test(x,**kwargs):
+#     print(x)
+#     print(kwargs)
+# # test(1,2,3,4,5,[1,2,3],'a',{1:'2'})
+# test(1,y=2)
 
+#
+# def test(x,*arge,**kwargs):
+#     print(x)
+#     print(arge)
+#     print(kwargs)
+# test(1,2,3,4,5,'a',[1,2,['x']],name1 = 'alawn',name2 = 'quiana')

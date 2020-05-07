@@ -1,5 +1,6 @@
 import xlrd
 from IPy import IP
+from jinja2 import Template
 class Vlandes:
     vlan =""
     Function=""
@@ -21,16 +22,18 @@ for n in range (1,nrows):
     else:
         Vdict[v.floor]=[]
         Vdict[v.floor].append(v)
-        print(v.floor)
-with open(r'D:\GITHUB\Profile_generation\template\vlan.txt', 'r+' ) as fout1:#open(r'D:\GITHUB\Profile_generation\template\Backup-VLAN.txt', 'r+' ) as fout2:
-    template1=fout1.read()
-#    template2=fout2.read()
-fout1.close()
-#fout2.close()
-for vn in Vdict.keys():
-    with open (r'D:\config_profile\master-floor-'+vn+'.txt','a+') as m:
-        m.seek(0,0)
-        m.truncate()
-        for y in Vdict[vn]:
-            m.write(template1.replace('$vlan-num', y.vlan).replace('$vlan-name', y.function))
-    m.close()
+    template = Template('vlan {{vlan_num}}\nname {{ vlan_name}}')
+    template.render(vlan_num=v.vlan)
+    print(template.render())
+# with open(r'D:\GITHUB\Profile_generation\template\vlan.txt', 'r+' ) as fout1:#open(r'D:\GITHUB\Profile_generation\template\Backup-VLAN.txt', 'r+' ) as fout2:
+#     template1=fout1.read()
+# #    template2=fout2.read()
+# fout1.close()
+# #fout2.close()
+# for vn in Vdict.keys():
+#     with open (r'D:\config_profile\master-floor-'+vn+'.txt','a+') as m:
+#         m.seek(0,0)
+#         m.truncate()
+#         for y in Vdict[vn]:
+#             m.write(template1.replace('$vlan-num', y.vlan).replace('$vlan-name', y.function))
+#     m.close()

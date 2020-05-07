@@ -256,34 +256,211 @@
 #     print(kwargs)
 # test(1,2,3,4,5,'a',[1,2,['x']],name1 = 'alawn',name2 = 'quiana')
 
-def aaa():
-     print('alawn')
-     bbb()
-def bbb():
-     print('quiana')
-aaa()
+# def aaa():
+#      print('alawn')
+#      bbb()
+# def bbb():
+#      print('quiana')
+# aaa()
+#
+# def calc(n):
+#      print(n)
+#      if int(n/2 == 0):
+#           return n
+#      return calc(int(n/2))
+# calc(10)
+#
+#
+# person_list = ['quiana','kevin','jimmy','alawn']
+# def ask_way(person_list):
+#      print('-'*60)
+#      if len(person_list) == 0:
+#           return 'nobody knows'
+#      person = person_list.pop(0)
+#      if person == 'alawn':
+#           return '%s knows'%(person)
+#      print('HI,%s,can you tell me'%person)
+#      print("%s say:sorry,i don't know,I can help you to ask %s" %(person,person_list))
+#      print('--%s--tell me,%s knows'%(person,person_list))
+#      res = ask_way(person_list)
+#      print('%s say: %s' %(person,res))
+#      return res
+# RES = ask_way(person_list)
+# print(RES)
 
-def calc(n):
-     print(n)
-     if int(n/2 == 0):
-          return n
-     return calc(int(n/2))
-calc(10)
+
+#作用域
+# def test1():
+#     print('in the test1')
+# def test():
+#     print('int the test')
+#     return test1
+# res = test()
+# print(res())
+
+# name = 'alawn'
+# def foo():
+#     name = 'jimmy'
+#     def bar():
+#         name = 'quiana'
+#         def tt():
+#             print(name)
+#         return tt
+#     return bar
+# foo()()()
 
 
-person_list = ['quiana','kevin','jimmy','alawn']
-def ask_way(person_list):
-     print('-'*60)
-     if len(person_list) == 0:
-          return 'nobody knows'
-     person = person_list.pop(0)
-     if person == 'alawn':
-          return '%s knows'%(person)
-     print('HI,%s,can you tell me'%person)
-     print("%s say:sorry,i don't know,I can help you to ask %s" %(person,person_list))
-     print('--%s--tell me,%s knows'%(person,person_list))
-     res = ask_way(person_list)
-     print('%s say: %s' %(person,res))
-     return res
-RES = ask_way(person_list)
-print(RES)
+# lambda x:x+1
+# calc = lambda x:x+1
+# print(calc(10))
+
+# name = 'alawn'
+# def change_name(X):
+#     return name + '_king'
+# res = change_name(name)
+# print(res)
+
+# name = 'alawn'
+# change_name = lambda x:x+'_king'
+# print(change_name(name))
+
+# name = ['alawn','quiana','kevin','jimmy']
+# for info in name:
+#     res = lambda x:x+'_king'
+#     print(res(info))
+#     print(info)
+
+# def handel():
+#     print('from handel')
+#     return handel
+# handel()
+
+# def bar(n):
+#     return n
+# def foo(x):
+#     return bar(x)
+
+# def calc(seq):
+#     if len(seq) == 1:
+#         return seq[0]
+#     head,*tail=seq
+#     return head+calc(tail)
+# print(calc(range(100)))
+
+
+# def calc(l):
+#     print(l)
+#     if len(l) == 1:
+#          return l[0]
+#     first,second,*args=l
+#     l[0]=first+second
+#     l.pop(l)
+#     return calc(l)
+#
+# x = calc([i for i in range(10)])
+# print(x)
+
+# num = [1,3,2,4,7,5,8,6]
+# new = []
+# for i in num:
+#     new.append(i**2)
+# print(new)
+# num_list = [1,3,2,4,7,5,8,6]
+# def fuc_addition_one(x):
+#     return x+1
+# def fuc_subtraction_one(x):
+#     return x-1
+# def fuc_square(x):
+#     return x**2
+#
+# def new_list(func,array):
+#     new = []
+#     for i in array:
+#         res = func(i)
+#         new.append(res)
+#     return new
+#
+# print(new_list(fuc_addition_one,num_list))
+# print(new_list(lambda x:x+1,num_list))
+#
+# print(new_list(fuc_subtraction_one,num_list))
+# print(new_list(lambda x:x-1,num_list))
+#
+# print(new_list(fuc_square,num_list))
+# print(new_list(lambda x:x**2,num_list))
+#
+# res = map(lambda x:x+1,num_list)
+# print(list(res))
+
+# from functools import reduce
+# num_list = [1,2,3,4,5,6,7,8]
+# # res = 0
+# # for num in num_list:
+# #     res+=num
+# # print(res)
+# # def addition(fuc,array,init=None):
+# #     if init is None:
+# #         res = array.pop(0)
+# #     else:
+# #         res = init
+# #     for num in array:
+# #         res = fuc(res,num)
+# #     return res
+# # print(addition(lambda x,y:x+y,num_list,100))
+# print(reduce(lambda x,y:x+y,num_list,100))
+
+# name = '你好'
+# print(bytes(name,encoding = 'utf-8').decode('utf-8'))
+
+# dic_str = "{'name':'alawn'}"
+# print(type(dic_str))
+# print(type(eval(dic_str)))
+
+# print(list(zip(('a','b','c'),(1,2,3))))
+# print(list(zip(('a','b','c'),(1,2,3,4))))
+# print(list(zip(('a','b','c','d'),(1,2,3))))
+# print(list(zip(('abcd'),('1,2,3'))))
+
+# age_list = {'2':60,'4':20,'1':100,'3':30}
+# print(max(zip(age_list.values(),age_list.keys())))
+#
+# string = 'abcd1234'
+# s1 = slice(2,6)
+# s2 = slice(2,6,3)
+# print(string[s1])
+# print(string[s2])
+
+# list = ['a','1','asd','4e','=']
+# print(sorted(list))
+
+# price = {
+#     'alawn':30000,
+#     'jimmy':1500,
+#     'keivn':800
+# }
+# key = lambda key:price[key]
+# print (list(key))rr
+
+# src_file = open('practice.txt')
+# data = src_file.readlines()
+# src_file.close()
+# dst_file = open('new_practice.txt','w')
+# dst_file.writelines(data[0])
+# dst_file.close()
+
+# with open('pracrice.txt','r') as src_file,\
+#         open('new_practice.txt','w') as dst_file:
+
+
+f1 = open('a.txt','r+')
+f1.write('abab')
+# f1.seek(3)
+# f1.write('cdcd')
+# print(f1.tell())
+print(f1.truncate(6))
+f1.close()
+
+
+
+
+
