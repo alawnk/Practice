@@ -576,14 +576,160 @@
 
 # 生产者消费模型(并发执行)
 
-import time
-def cal(l):
-    start_time = time.time()
-    res = 0
-    for i in l:
-        time.sleep(0.1)
-        res += i
-    stop_time = time.time()
-    print('函数运行时间是%s'%(start_time-stop_time))
-    return res
-print(cal(range(1000)))
+# import time
+# def timer(func):
+#     def wapper(*args,**kwargs):
+#         start_time = time.time()
+#         res = func(*args,**kwargs)
+#         stop_time = time.time()
+#         print('函数运行时间是%s'%(stop_time-start_time))
+#         return  res
+#     return wapper
+#
+# @timer
+# def cal(l):
+#     res = 0
+#     for i in l:
+#         time.sleep(0.01)
+#         res += i
+#     print(res)
+#     return '函数运行完毕'
+# print(cal(range(1000)))
+
+# import time
+#
+# def foo():
+#     time.sleep(3)
+#     print(' from foo')
+# foo()
+#
+# def timer(func):
+#     start_time = time.time()
+#     timer(foo)
+#     stop_time = time.time()
+#     print('函数运行时间:%s'%(stop_time-start_time))
+#     return func
+
+
+#函数嵌套
+# def father(name):
+#     print('from father %s'%name)
+#     def son():
+#         print('from son')
+#         def grandson():
+#             print('from grandson')
+#         grandson()
+#     son()
+# father('alawn')
+#
+# #装饰框架
+# def timmer(funcv):
+#     def wrapper()
+#         print(func)
+#         func()
+#     return wrapper
+#
+# usr = {'username':None,'login':False}
+# def login(func):
+#     def wrapper(*args,**kwargs):
+#         if usr['username'] and usr['login']:
+#             res = func(*args,**kwargs)
+#             return res
+#         username = input('用户名：').strip()
+#         passwd = input('密码：').strip()
+#         if username == 'alawn' and passwd == 'xcsdwe':
+#             usr['username'] = username
+#             usr['login'] = True
+#             res = func(*args,**kwargs)
+#             return res
+#         else:
+#             print('sorry')
+#     return wrapper
+# @login
+# def index():
+#     print('mall')
+# @login
+# def home(name):
+#     print('%s,home'%name)
+# @login
+# def shopping_car():
+#     print('shopping_car')
+# @login
+# def order():
+#     print('order')
+# index()
+# home('alawn')
+# shopping_car()
+# order()
+
+
+# TAG = True
+# while TAG:
+#     print('level 1')
+#     data = input('level 1=:').strip()
+#     if data == 'quit':break
+#     if data == 'quit_all':TAG = False
+#     while TAG:
+#         print('level 2:')
+#         data = input('level 2=:').strip()
+#         if data =='quit':break
+#         if data =='quit_all':TAG = False
+#         while TAG:
+#             print('level 3:')
+#             data = input('level 3=:').strip()
+#             if data == 'quit':break
+#             if data == 'quit_all':TAG = False
+
+def fetch(data):
+    print('正在使用查询功能')
+    print('要查询的数据是:',data)
+    vlandata = 'interface Vlan%s' %data
+    with open('C:/Users/alawn/Desktop/interface_vlan.txt','r') as config_file:
+        tag = False
+        ret = []
+        for line in config_file:
+            if line.strip() == vlandata:
+                tag = True
+                print(vlandata)
+                continue
+            if tag and line.startswith('interface'):
+                break
+            if tag:
+                print(line.strip('\n'))
+                ret.append(line)
+        return ret
+
+
+
+def add():
+    pass
+
+def change():
+    print('正在使用修改功能')
+    print('请输入需要修改的配置:')
+
+def delete():
+    pass
+
+if __name__ == '__main__':
+    msg='''
+    1.查询
+    2.添加
+    3.修改
+    4.删除
+    5.退出
+    '''
+    msg_dic = {
+        '1':fetch,
+        '2':add,
+        '3':change,
+        '4':delete
+               }
+    while True:
+        print(msg)
+        choice = input('请输入功能选项:').strip()
+        if not choice:continue
+        if choice == '5':break
+
+        data = input('请输入要查询的内容:').strip()
+        print(msg_dic[choice](data))
