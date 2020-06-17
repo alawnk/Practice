@@ -394,19 +394,19 @@
 #
 # # from functools import reduce
 # # num_list = [1,2,3,4,5,6,7,8]
-# # # res = 0
-# # # for num in num_list:
-# # #     res+=num
-# # # print(res)
-# # # def addition(fuc,array,init=None):
-# # #     if init is None:
-# # #         res = array.pop(0)
-# # #     else:
-# # #         res = init
-# # #     for num in array:
-# # #         res = fuc(res,num)
-# # #     return res
-# # # print(addition(lambda x,y:x+y,num_list,100))
+# res = 0
+# for num in num_list:
+#     res+=num
+# print(res)
+# def addition(fuc,array,init=None):
+#     if init is None:
+#         res = array.pop(0)
+#     else:
+#         res = init
+#     for num in array:
+#         res = fuc(res,num)
+#     return res
+# print(addition(lambda x,y:x+y,num_list,100))
 # # print(reduce(lambda x,y:x+y,num_list,100))
 #
 # # name = '你好'
@@ -679,34 +679,66 @@
 #             data = input('level 3=:').strip()
 #             if data == 'quit':break
 #             if data == 'quit_all':TAG = False
-
+import os
 def fetch(data):
-    print('正在使用查询功能')
-    print('要查询的数据是:',data)
-    vlandata = 'interface Vlan%s' %data
+    # print('正在使用查询功能')
+    # print('要查询的数据是:',data)
+    vlandata = 'interface %s' %data
     with open('C:/Users/alawn/Desktop/interface_vlan.txt','r') as config_file:
         tag = False
         ret = []
         for line in config_file:
             if line.strip() == vlandata:
                 tag = True
-                print(vlandata)
+                print(vlandata,end='')
                 continue
             if tag and line.startswith('interface'):
                 break
             if tag:
                 print(line.strip('\n'))
                 ret.append(line)
-        return ret
+    return ret
 
 
 
 def add():
     pass
 
-def change():
+def change(data):
     print('正在使用修改功能')
-    print('请输入需要修改的配置:')
+    # print('需要修改的数据是:',data)
+    interface = data[0]['interface']
+    interface_info = 'interface %s' %interface
+    exit_ip = '%sip address %s\n' %(' ',data[0]['record']['ip address'])
+    new_ip = '%sip address %s\n' %(' ',data[1]['record']['ip address'])
+    print('用户想到修改的数据是',exit_ip)
+    res = fetch(interface)
+    print(res)
+    if not res or exit_ip not in res:
+        return '需要修改的数据不存在'
+    else:
+        index = res.index(exit_ip)
+        res[index] = new_ip
+    res.insert(0,'%s\n' %interface_info)
+    with open('C:/Users/alawn/Desktop/interface_vlan.txt','r') as r_config_file,open ('C:/Users/alawn/Desktop/interface_vlan1.txt','w') as w_config_file:
+        tag = False
+        has_write = False
+        for ip_info in r_config_file:
+            if ip_info.strip() == interface_info:
+                tag = True
+                continue
+            if tag and ip_info.startswith('interface'):
+                tag = False
+            if not tag:
+                w_config_file.write(ip_info)
+            else:
+                if not has_write:
+                    for record in res:
+                        w_config_file.write(record)
+                    has_write = True
+    os.rename('C:/Users/alawn/Desktop/interface_vlan.txt','C:/Users/alawn/Desktop/interface_vlan.txt.bak')
+    os.rename('C:/Users/alawn/Desktop/interface_vlan1.txt','C:/Users/alawn/Desktop/interface_vlan.txt')
+    os.remove('C:/Users/alawn/Desktop/interface_vlan.txt.bak')
 
 def delete():
     pass
@@ -732,4 +764,6 @@ if __name__ == '__main__':
         if choice == '5':break
 
         data = input('请输入要查询的内容:').strip()
+        if choice != '1':
+            data = eval(data)
         print(msg_dic[choice](data))
