@@ -679,6 +679,12 @@
 #             data = input('level 3=:').strip()
 #             if data == 'quit':break
 #             if data == 'quit_all':TAG = False
+
+
+
+
+# [{'interface':'Vlan10','record':{'ip address':'10.80.1.66 255.255.255.192'}},{'interface':'Vlan10','record':{'ip address':'10.80.1.255 255.255.255.192'}}]
+
 import os
 def fetch(data):
     # print('正在使用查询功能')
