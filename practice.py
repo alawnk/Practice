@@ -682,9 +682,8 @@
 
 
 
-
+#常规写法
 # [{'interface':'Vlan10','record':{'ip address':'10.80.1.66 255.255.255.192'}},{'interface':'Vlan10','record':{'ip address':'10.80.1.255 255.255.255.192'}}]
-
 import os
 def fetch(data):
     # print('正在使用查询功能')
@@ -742,6 +741,101 @@ def change(data):
                     for record in res:
                         w_config_file.write(record)
                     has_write = True
+    os.rename('C:/Users/alawn/Desktop/interface_vlan.txt','C:/Users/alawn/Desktop/interface_vlan.txt.bak')
+    os.rename('C:/Users/alawn/Desktop/interface_vlan1.txt','C:/Users/alawn/Desktop/interface_vlan.txt')
+    os.remove('C:/Users/alawn/Desktop/interface_vlan.txt.bak')
+
+def delete():
+    pass
+
+if __name__ == '__main__':
+    msg='''
+    1.查询
+    2.添加
+    3.修改
+    4.删除
+    5.退出
+    '''
+    msg_dic = {
+        '1':fetch,
+        '2':add,
+        '3':change,
+        '4':delete
+               }
+    while True:
+        print(msg)
+        choice = input('请输入功能选项:').strip()
+        if not choice:continue
+        if choice == '5':break
+
+        data = input('请输入要查询的内容:').strip()
+        if choice != '1':
+            data = eval(data)
+        print(msg_dic[choice](data))
+
+
+#程序解耦
+import os
+
+def file_handle(interface_info,res=None,type='fetch'):
+    if type == 'fetch':
+        with open('C:/Users/alawn/Desktop/interface_vlan.txt','r') as config_file:
+            tag = False
+            ret = []
+            for line in config_file:
+                if line.strip() == interface_info:
+                    tag = True
+                    print(interface_info,end='')
+                    continue
+                if tag and line.startswith('interface'):
+                    break
+                if tag:
+                    print(line.strip('\n'))
+                    ret.append(line)
+        return ret
+    elif type == 'change':
+        with open('C:/Users/alawn/Desktop/interface_vlan.txt', 'r') as r_config_file, \
+                open('C:/Users/alawn/Desktop/interface_vlan1.txt', 'w') as w_config_file:
+            tag = False
+            has_write = False
+            for ip_info in r_config_file:
+                if ip_info.strip() == interface_info:
+                    tag = True
+                    continue
+                if tag and ip_info.startswith('interface'):
+                    tag = False
+                if not tag:
+                    w_config_file.write(ip_info)
+                else:
+                    if not has_write:
+                        for record in res:
+                            w_config_file.write(record)
+                        has_write = True
+def fetch(data):
+    # print('正在使用查询功能')
+    # print('要查询的数据是:',data)
+    interface_info = 'interface %s' %data
+    return file_handle(interface_info)
+
+def add():
+    pass
+
+def change(data):
+    print('正在使用修改功能')
+    interface = data[0]['interface']
+    interface_info = 'interface %s' %interface
+    exit_ip = '%sip address %s\n' %(' ',data[0]['record']['ip address'])
+    new_ip = '%sip address %s\n' %(' ',data[1]['record']['ip address'])
+    print('用户想到修改的数据是',exit_ip)
+    res = fetch(interface)
+    print(res)
+    if not res or exit_ip not in res:
+        return '需要修改的数据不存在'
+    else:
+        index = res.index(exit_ip)
+        res[index] = new_ip
+    res.insert(0,'%s\n' %interface_info)
+    file_handle(interface_info,res=res,type='change')
     os.rename('C:/Users/alawn/Desktop/interface_vlan.txt','C:/Users/alawn/Desktop/interface_vlan.txt.bak')
     os.rename('C:/Users/alawn/Desktop/interface_vlan1.txt','C:/Users/alawn/Desktop/interface_vlan.txt')
     os.remove('C:/Users/alawn/Desktop/interface_vlan.txt.bak')
