@@ -508,7 +508,7 @@
 # 		ret.append('baozi%s'%i)
 # 	return ret
 #
-# def chibaozi(res):
+# def chibaozi(res):  
 # 	for sn,baozi in enumerate(res):
 # 		print('第%s个人吃了%s'%(sn,baozi))
 #
@@ -684,186 +684,268 @@
 
 #常规写法
 # [{'interface':'Vlan10','record':{'ip address':'10.80.1.66 255.255.255.192'}},{'interface':'Vlan10','record':{'ip address':'10.80.1.255 255.255.255.192'}}]
-import os
-def fetch(data):
-    # print('正在使用查询功能')
-    # print('要查询的数据是:',data)
-    vlandata = 'interface %s' %data
-    with open('C:/Users/alawn/Desktop/interface_vlan.txt','r') as config_file:
-        tag = False
-        ret = []
-        for line in config_file:
-            if line.strip() == vlandata:
-                tag = True
-                print(vlandata,end='')
-                continue
-            if tag and line.startswith('interface'):
-                break
-            if tag:
-                print(line.strip('\n'))
-                ret.append(line)
-    return ret
+# import os
+# def fetch(data):
+#     # print('正在使用查询功能')
+#     # print('要查询的数据是:',data)
+#     vlandata = 'interface %s' %data
+#     with open('C:/Users/alawn/Desktop/interface_vlan.txt','r') as config_file:
+#         tag = False
+#         ret = []
+#         for line in config_file:
+#             if line.strip() == vlandata:
+#                 tag = True
+#                 print(vlandata,end='')
+#                 continue
+#             if tag and line.startswith('interface'):
+#                 break
+#             if tag:
+#                 print(line.strip('\n'))
+#                 ret.append(line)
+#     return ret
+#
+#
+#
+# def add():
+#     pass
+#
+# def change(data):
+#     print('正在使用修改功能')
+#     # print('需要修改的数据是:',data)
+#     interface = data[0]['interface']
+#     interface_info = 'interface %s' %interface
+#     exit_ip = '%sip address %s\n' %(' ',data[0]['record']['ip address'])
+#     new_ip = '%sip address %s\n' %(' ',data[1]['record']['ip address'])
+#     print('用户想到修改的数据是',exit_ip)
+#     res = fetch(interface)
+#     print(res)
+#     if not res or exit_ip not in res:
+#         return '需要修改的数据不存在'
+#     else:
+#         index = res.index(exit_ip)
+#         res[index] = new_ip
+#     res.insert(0,'%s\n' %interface_info)
+#     with open('C:/Users/alawn/Desktop/interface_vlan.txt','r') as r_config_file,open ('C:/Users/alawn/Desktop/interface_vlan1.txt','w') as w_config_file:
+#         tag = False
+#         has_write = False
+#         for ip_info in r_config_file:
+#             if ip_info.strip() == interface_info:
+#                 tag = True
+#                 continue
+#             if tag and ip_info.startswith('interface'):
+#                 tag = False
+#             if not tag:
+#                 w_config_file.write(ip_info)
+#             else:
+#                 if not has_write:
+#                     for record in res:
+#                         w_config_file.write(record)
+#                     has_write = True
+#     os.rename('C:/Users/alawn/Desktop/interface_vlan.txt','C:/Users/alawn/Desktop/interface_vlan.txt.bak')
+#     os.rename('C:/Users/alawn/Desktop/interface_vlan1.txt','C:/Users/alawn/Desktop/interface_vlan.txt')
+#     os.remove('C:/Users/alawn/Desktop/interface_vlan.txt.bak')
+#
+# def delete():
+#     pass
+#
+# if __name__ == '__main__':
+#     msg='''
+#     1.查询
+#     2.添加
+#     3.修改
+#     4.删除
+#     5.退出
+#     '''
+#     msg_dic = {
+#         '1':fetch,
+#         '2':add,
+#         '3':change,
+#         '4':delete
+#                }
+#     while True:
+#         print(msg)
+#         choice = input('请输入功能选项:').strip()
+#         if not choice:continue
+#         if choice == '5':break
+#
+#         data = input('请输入要查询的内容:').strip()
+#         if choice != '1':
+#             data = eval(data)
+#         print(msg_dic[choice](data))
+#
+#
+# #程序解耦
+# import os
+#
+# def file_handle(interface_info,res=None,type='fetch'):
+#     if type == 'fetch':
+#         with open('C:/Users/alawn/Desktop/interface_vlan.txt','r') as config_file:
+#             tag = False
+#             ret = []
+#             for line in config_file:
+#                 if line.strip() == interface_info:
+#                     tag = True
+#                     print(interface_info,end='')
+#                     continue
+#                 if tag and line.startswith('interface'):
+#                     break
+#                 if tag:
+#                     print(line.strip('\n'))
+#                     ret.append(line)
+#         return ret
+#     elif type == 'change':
+#         with open('C:/Users/alawn/Desktop/interface_vlan.txt', 'r') as r_config_file, \
+#                 open('C:/Users/alawn/Desktop/interface_vlan1.txt', 'w') as w_config_file:
+#             tag = False
+#             has_write = False
+#             for ip_info in r_config_file:
+#                 if ip_info.strip() == interface_info:
+#                     tag = True
+#                     continue
+#                 if tag and ip_info.startswith('interface'):
+#                     tag = False
+#                 if not tag:
+#                     w_config_file.write(ip_info)
+#                 else:
+#                     if not has_write:
+#                         for record in res:
+#                             w_config_file.write(record)
+#                         has_write = True
+# def fetch(data):
+#     # print('正在使用查询功能')
+#     # print('要查询的数据是:',data)
+#     interface_info = 'interface %s' %data
+#     return file_handle(interface_info)
+#
+# def add():
+#     pass
+#
+# def change(data):
+#     print('正在使用修改功能')
+#     interface = data[0]['interface']
+#     interface_info = 'interface %s' %interface
+#     exit_ip = '%sip address %s\n' %(' ',data[0]['record']['ip address'])
+#     new_ip = '%sip address %s\n' %(' ',data[1]['record']['ip address'])
+#     print('用户想到修改的数据是',exit_ip)
+#     res = fetch(interface)
+#     print(res)
+#     if not res or exit_ip not in res:
+#         return '需要修改的数据不存在'
+#     else:
+#         index = res.index(exit_ip)
+#         res[index] = new_ip
+#     res.insert(0,'%s\n' %interface_info)
+#     file_handle(interface_info,res=res,type='change')
+#     os.rename('C:/Users/alawn/Desktop/interface_vlan.txt','C:/Users/alawn/Desktop/interface_vlan.txt.bak')
+#     os.rename('C:/Users/alawn/Desktop/interface_vlan1.txt','C:/Users/alawn/Desktop/interface_vlan.txt')
+#     os.remove('C:/Users/alawn/Desktop/interface_vlan.txt.bak')
+#
+# def delete():
+#     pass
+#
+# if __name__ == '__main__':
+#     msg='''
+#     1.查询
+#     2.添加
+#     3.修改
+#     4.删除
+#     5.退出
+#     '''
+#     msg_dic = {
+#         '1':fetch,
+#         '2':add,
+#         '3':change,
+#         '4':delete
+#                }
+#     while True:
+#         print(msg)
+#         choice = input('请输入功能选项:').strip()
+#         if not choice:continue
+#         if choice == '5':break
+#
+#         data = input('请输入要查询的内容:').strip()
+#         if choice != '1':
+#             data = eval(data)
+#         print(msg_dic[choice](data))
+
+# import time
+# print(time.mktime(time.localtime()))
+# print(time.strftime('%Y-%m-%d %X',time.localtime()))
+# print(time.strptime('2020:07:01:23:42:20','%Y:%m:%d:%X'))
+# print(time.asctime())
 
 
+# import random
+# print(random.random())
+# print(random.randint(1,10))
+# print(random.randrange(1,10))
+# print(random.choice([[1,2],3,(4,5),{'6':'7','8':'9'}]))
+# print(random.sample([[1,2],3,(4,5),{'6':'7','8':'9'}],2))
+# print(random.uniform(1,3))
 
-def add():
-    pass
+#
+# list = [1,2,3,4,5,6]
+# random.shuffle(list)
+# print(list)
 
-def change(data):
-    print('正在使用修改功能')
-    # print('需要修改的数据是:',data)
-    interface = data[0]['interface']
-    interface_info = 'interface %s' %interface
-    exit_ip = '%sip address %s\n' %(' ',data[0]['record']['ip address'])
-    new_ip = '%sip address %s\n' %(' ',data[1]['record']['ip address'])
-    print('用户想到修改的数据是',exit_ip)
-    res = fetch(interface)
-    print(res)
-    if not res or exit_ip not in res:
-        return '需要修改的数据不存在'
-    else:
-        index = res.index(exit_ip)
-        res[index] = new_ip
-    res.insert(0,'%s\n' %interface_info)
-    with open('C:/Users/alawn/Desktop/interface_vlan.txt','r') as r_config_file,open ('C:/Users/alawn/Desktop/interface_vlan1.txt','w') as w_config_file:
-        tag = False
-        has_write = False
-        for ip_info in r_config_file:
-            if ip_info.strip() == interface_info:
-                tag = True
-                continue
-            if tag and ip_info.startswith('interface'):
-                tag = False
-            if not tag:
-                w_config_file.write(ip_info)
-            else:
-                if not has_write:
-                    for record in res:
-                        w_config_file.write(record)
-                    has_write = True
-    os.rename('C:/Users/alawn/Desktop/interface_vlan.txt','C:/Users/alawn/Desktop/interface_vlan.txt.bak')
-    os.rename('C:/Users/alawn/Desktop/interface_vlan1.txt','C:/Users/alawn/Desktop/interface_vlan.txt')
-    os.remove('C:/Users/alawn/Desktop/interface_vlan.txt.bak')
-
-def delete():
-    pass
-
-if __name__ == '__main__':
-    msg='''
-    1.查询
-    2.添加
-    3.修改
-    4.删除
-    5.退出
-    '''
-    msg_dic = {
-        '1':fetch,
-        '2':add,
-        '3':change,
-        '4':delete
-               }
-    while True:
-        print(msg)
-        choice = input('请输入功能选项:').strip()
-        if not choice:continue
-        if choice == '5':break
-
-        data = input('请输入要查询的内容:').strip()
-        if choice != '1':
-            data = eval(data)
-        print(msg_dic[choice](data))
+# def vcode():
+#     ret = ''
+#     for i in range (5):
+#         num = random.randint(0,9)
+#         alf = chr(random.randint(65,122))
+#         code = str(random.choice([num,alf]))
+#         ret += code
+#     return ret
+# print(vcode())
 
 
-#程序解耦
-import os
+# import os
+# print(os.getcwd())             #获取当前目录
+# os.chdir('../GNS3')            #改变工作目录，只能向后改变
+# print(os.getcwd())
+# print(os.curdir)               #返回当前目录
+# print(os.pardir)               #返回当前目录的父级目录
+# os.makedirs('test1')           #创建目录，可生成多层递归目录
+# os.removedirs()                #递归删除空目录，若目录不为空，则停止
+# os.mkdir()                     #生成单级目录
+# print(os.listdir('D:/GNS3'))
+# os.rmdir('test1')              #删除单级空目录，若目录不为空，则报错
+# print(os.listdir('D:/GNS3'))
+# os.remove('test.txt')          #删除一个文件
+# print(os.listdir('D:/GNS3'))
+# os.rename()                    #重命名文件
+# os.stat('test.txt')            #显示文件详细信息
+# print(os.sep)                  #输出操作系统特定的路径分隔符
+# print(os.linesep)              #输出当前平台使用的行终止符
+# print(os.pathsep)              #输出用于分割文件路径的字符
+# print(os.name)                 #输出当前平台名称
+# os.system()                    #运行shell命令，直接显示
+# print(os.environ)              #获取系统环境变更
+# os.path.abspath(path)          #返回path规范化的绝对路径
+# os.path.split(path)            #将path分割成目录和文件名二元组返回
+# os.path.dirname(path)          #返回path的目录
+# os.path.basename(path)         #返回path最后的文件名
+# os.path.exists(path)           #如果path存在则返回true,反之False
+# os.path.isabs(path)            #如果path是绝对路径，则返回True
+# os.path.isfile(path)           #如果path是一个存在的文件，则返回True
+# os.path.isdir(path)            #如果path是一个存在的目录，则返回True
+# *os.path.join(path1[,path2[,...]]) #将多个路径组合后返回，第一个绝对路径之前的参数将被忽略
+# os.path.getatime(path)         #返回path所指向的文件或目录最后的存取时间
+# os.path.getmtime(path)         #返回path所指向的文件或目录最后的修改时间
+# sys.argv  命令行参数
+# sys.exit(n)   退出程序
+# import sys,time
+# for i in range (100):
+#     sys.stdout.write('#')
+#     time.sleep(0.1)
+#     sys.stdout.flush()
+# import json
+# dic = {"name":"alawn"}
+# data = json.dumps(dic)
+# print(data)
+# print(type(data))
+# data1 = json.load()
 
-def file_handle(interface_info,res=None,type='fetch'):
-    if type == 'fetch':
-        with open('C:/Users/alawn/Desktop/interface_vlan.txt','r') as config_file:
-            tag = False
-            ret = []
-            for line in config_file:
-                if line.strip() == interface_info:
-                    tag = True
-                    print(interface_info,end='')
-                    continue
-                if tag and line.startswith('interface'):
-                    break
-                if tag:
-                    print(line.strip('\n'))
-                    ret.append(line)
-        return ret
-    elif type == 'change':
-        with open('C:/Users/alawn/Desktop/interface_vlan.txt', 'r') as r_config_file, \
-                open('C:/Users/alawn/Desktop/interface_vlan1.txt', 'w') as w_config_file:
-            tag = False
-            has_write = False
-            for ip_info in r_config_file:
-                if ip_info.strip() == interface_info:
-                    tag = True
-                    continue
-                if tag and ip_info.startswith('interface'):
-                    tag = False
-                if not tag:
-                    w_config_file.write(ip_info)
-                else:
-                    if not has_write:
-                        for record in res:
-                            w_config_file.write(record)
-                        has_write = True
-def fetch(data):
-    # print('正在使用查询功能')
-    # print('要查询的数据是:',data)
-    interface_info = 'interface %s' %data
-    return file_handle(interface_info)
+import re
+print(re.findall('\d+','alawn20quiana18'))
 
-def add():
-    pass
-
-def change(data):
-    print('正在使用修改功能')
-    interface = data[0]['interface']
-    interface_info = 'interface %s' %interface
-    exit_ip = '%sip address %s\n' %(' ',data[0]['record']['ip address'])
-    new_ip = '%sip address %s\n' %(' ',data[1]['record']['ip address'])
-    print('用户想到修改的数据是',exit_ip)
-    res = fetch(interface)
-    print(res)
-    if not res or exit_ip not in res:
-        return '需要修改的数据不存在'
-    else:
-        index = res.index(exit_ip)
-        res[index] = new_ip
-    res.insert(0,'%s\n' %interface_info)
-    file_handle(interface_info,res=res,type='change')
-    os.rename('C:/Users/alawn/Desktop/interface_vlan.txt','C:/Users/alawn/Desktop/interface_vlan.txt.bak')
-    os.rename('C:/Users/alawn/Desktop/interface_vlan1.txt','C:/Users/alawn/Desktop/interface_vlan.txt')
-    os.remove('C:/Users/alawn/Desktop/interface_vlan.txt.bak')
-
-def delete():
-    pass
-
-if __name__ == '__main__':
-    msg='''
-    1.查询
-    2.添加
-    3.修改
-    4.删除
-    5.退出
-    '''
-    msg_dic = {
-        '1':fetch,
-        '2':add,
-        '3':change,
-        '4':delete
-               }
-    while True:
-        print(msg)
-        choice = input('请输入功能选项:').strip()
-        if not choice:continue
-        if choice == '5':break
-
-        data = input('请输入要查询的内容:').strip()
-        if choice != '1':
-            data = eval(data)
-        print(msg_dic[choice](data))

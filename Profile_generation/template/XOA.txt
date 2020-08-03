@@ -1,0 +1,228 @@
+﻿no vstack
+no service tcp-small-servers
+no service udp-small-servers
+no service finger
+no ip finger
+no service pad
+no ip source-route
+no ip domain-lookup
+no ip http server
+no ip http secure-server
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime
+service timestamps log datetime msec localtime
+service password-encryption
+lldp run
+cdp run
+!
+!
+hostname $devicename
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret admin@Workxcsdwe
+!
+username netman secret tencent@work
+aaa new-model
+!
+!
+aaa new-model
+aaa authentication login consoleloginlocal local
+line con 0
+login authentication consoleloginlocal  
+no aaa authorization console            
+aaa authentication login default group tacacs+ local
+aaa authentication dot1x default group radius
+aaa authorization exec default group tacacs+ local 
+aaa authorization commands 1 default group tacacs+ local 
+aaa authorization commands 2 default group tacacs+ local 
+aaa authorization commands 15 default group tacacs+ local 
+aaa authorization network default group radius 
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 0 default start-stop group tacacs+
+aaa accounting commands 1 default start-stop group tacacs+
+aaa accounting commands 2 default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+aaa authorization config-commands
+!
+!
+aaa session-id common
+clock timezone CST 8
+system mtu routing 1500
+vtp mode transparent
+ip subnet-zero
+!
+!
+ip dhcp snooping vlan 1-4094
+no ip dhcp snooping information option
+ip dhcp snooping
+ip dhcp snooping database flash:dhcp-snooping.db 
+!
+ip arp inspection vlan 1-9,12-43,45-99,110-599  
+ip arp inspection validate src-mac 
+ip arp inspection log-buffer entries 1024 
+ip arp inspection log-buffer logs 1 interval 60  
+!
+!
+dot1x system-auth-control
+!
+!
+!         
+errdisable recovery cause udld
+errdisable recovery cause bpduguard
+errdisable recovery cause security-violation
+errdisable recovery cause channel-misconfig
+errdisable recovery cause pagp-flap
+errdisable recovery cause dtp-flap
+errdisable recovery cause link-flap
+errdisable recovery cause gbic-invalid
+errdisable recovery cause psecure-violation
+errdisable recovery cause dhcp-rate-limit
+errdisable recovery cause storm-control
+errdisable recovery cause arp-inspection
+errdisable recovery cause loopback
+errdisable recovery interval 120
+!
+spanning-tree mode rapid-pvst
+spanning-tree portfast bpduguard default
+no spanning-tree optimize bpdu transmission
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 10 
+name MGT
+vlan 44
+name Video
+vlan 600
+name OA-Device
+vlan 20
+name OA-1
+vlan 21
+name OA-2
+vlan 30
+name TY-1
+vlan 31
+name TY-2
+vlan 70
+name KF-1
+vlan 71
+name KF-2
+vlan 72
+name KF-3
+!
+interface Z  (默认端口配置)
+switchport access vlan X
+switchport mode access
+switchport port-security maximum 1
+switchport port-security
+switchport port-security violation restrict
+ip arp inspection limit rate 300
+authentication host-mode single-host 
+authentication order mab dot1x
+authentication port-control auto
+authentication periodic
+authentication timer reauthenticate 43200
+authentication violation protect
+mab
+dot1x pae authenticator
+dot1x max-req 3
+storm-control broadcast level pps 300
+storm-control multicast level pps 20k
+storm-control action shutdown
+spanning-tree portfast
+spanning-tree bpduguard enable
+ip dhcp snooping limit rate 300
+!
+port-channel load-balance src-dst-ip 
+!
+interface GigabitEthernet0/1
+ description CD-TX-B-BDR6FA-A-C3650-DOA-01-G0/1
+ switchport mode trunk
+ ip dhcp snooping trust
+ ip arp inspection trust 
+ spanning-tree guard loop
+ udld port aggressive 
+!
+interface GigabitEthernet0/2
+ description CD-TX-B-BDR6FA-B-C3650-DOA-01-G0/1
+ switchport mode trunk
+ ip dhcp snooping trust
+ ip arp inspection trust 
+ spanning-tree guard loop
+ udld port aggressive 
+!
+interface Vlan1
+ no ip address
+ no ip route-cache
+ shutdown
+!
+interface Vlan10
+ no shutdown
+ description MGT
+ ip address $ipaddr 255.255.255.192
+!
+ip default-gateway $GW
+!
+logging console
+logging buffered 40960 informational
+logging origin-id hostname
+logging facility local2
+logging host 10.16.2.8
+logging host 10.16.2.9
+logging host 10.14.67.158
+logging trap informational
+logging source-interface Vlan10
+!
+
+access-list 10 permit 10.16.2.0 0.0.0.255
+access-list 10 permit 172.30.14.0 0.0.0.31
+access-list 10 permit 10.14.34.0 0.0.0.255
+access-list 10 permit 10.14.67.0 0.0.0.255
+access-list 10 permit 10.14.195.0 0.0.0.255
+!
+snmp-server community tencent RO 10
+ip tacacs source-interface Vlan10
+tacacs-server host 10.14.32.81 key tencent
+tacacs-server host 10.14.160.81 key tencent
+tacacs-server directed-request
+!
+radius-server host 10.14.70.33 auth-port 28882 acct-port 28883 key tencent@its
+radius-server host 10.14.128.101 auth-port 28882 acct-port 28883 key tencent@its
+radius-server retransmit 3
+radius-server vsa send authentication
+!
+control-plane
+!
+!
+banner motd #
+
+             ACCESS IS RESTRICTED TO AUTHORISED PERSONNEL ONLY
+
+             This system is equipped with a security system
+             intended to prevent and record unauthorized
+             access attempts. Unauthorised access or use
+             shall render the user liable to criminal and/or
+             civil prosecution.
+
+#
+！
+line con 0
+ logging synchronous
+ exec-timeout 10  
+line vty 0 4
+ logging synchronous
+ exec-timeout 10  
+ transport input all
+line vty 5 15
+ logging synchronous
+ exec-timeout 10  
+ transport input all
+!
+ntp server 10.14.0.136
+ntp server 10.14.198.20
+end
+
+

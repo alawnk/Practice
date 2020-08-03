@@ -1,0 +1,198 @@
+﻿EWL交换机有些型号不支持统DHCP snooping和arp检测功能，所以统一不启用DHCP snooping和arp检测功能
+接AP的端口不启用dhcp snooping和ARP检测及dot1x准入，启用端口安全（只允许一个MAC接入）和bpduguard
+no vstack
+no service tcp-small-servers
+no service udp-small-servers
+no service finger
+no ip finger
+no service pad
+no ip source-route
+no ip domain-lookup
+no ip http server
+no ip http secure-server
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime
+service timestamps log datetime msec localtime
+service password-encryption
+lldp run
+cdp run
+!
+!
+hostname CD-TX-B-BDR6FA-C-C2960-EWL-01
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret admin@Workxcsdwe
+!
+username netman secret tencent@work
+aaa new-model
+!
+!
+aaa new-model
+aaa authentication login consoleloginlocal local
+line con 0
+login authentication consoleloginlocal  
+no aaa authorization console            
+aaa authentication login default group tacacs+ local
+aaa authentication dot1x default group radius
+aaa authorization exec default group tacacs+ local 
+aaa authorization commands 1 default group tacacs+ local 
+aaa authorization commands 2 default group tacacs+ local 
+aaa authorization commands 15 default group tacacs+ local 
+aaa authorization network default group radius 
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 0 default start-stop group tacacs+
+aaa accounting commands 1 default start-stop group tacacs+
+aaa accounting commands 2 default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+aaa authorization config-commands
+!
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone CST 8
+system mtu routing 1500
+vtp mode transparent
+ip subnet-zero
+!
+!
+
+!
+!
+!
+!
+!
+!
+!
+!
+!
+errdisable recovery cause udld
+errdisable recovery cause bpduguard
+errdisable recovery cause security-violation
+errdisable recovery cause channel-misconfig
+errdisable recovery cause pagp-flap
+errdisable recovery cause dtp-flap
+errdisable recovery cause link-flap
+errdisable recovery cause gbic-invalid
+errdisable recovery cause psecure-violation
+errdisable recovery cause dhcp-rate-limit
+errdisable recovery cause storm-control
+errdisable recovery cause arp-inspection
+errdisable recovery cause loopback
+errdisable recovery interval 120
+!
+spanning-tree mode rapid-pvst
+spanning-tree portfast bpduguard default
+no spanning-tree optimize bpdu transmission
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+!
+vlan 10
+ name MGT
+!
+vlan 11
+ name AP-MGT
+!
+!
+!
+!
+interface range GigabitEthernet1/0/1-22
+ description To_AP
+ switchport access vlan 11
+ switchport mode access
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+port-channel load-balance src-dst-ip 
+!
+interface GigabitEthernet1/0/23
+ description CD-TX-B-BDR6FA-A-C3650-DOA-01-G0/X
+ switchport mode trunk
+ spanning-tree guard loop
+ udld port aggressive 
+!
+interface GigabitEthernet1/0/24
+ description CD-TX-B-BDR6FA-B-C3650-DOA-01-G0/X
+ switchport mode trunk
+ spanning-tree guard loop
+ udld port aggressive 
+
+!
+interface Vlan1
+ no ip address
+ no ip route-cache
+ shutdown
+!
+interface Vlan10
+ no shutdown
+ description MGT
+ ip address 10.34.7.58 255.255.255.192
+
+!
+ip default-gateway 10.34.7.1
+!
+logging console
+logging buffered 40960 informational
+logging origin-id hostname
+logging facility local2
+logging host 10.14.0.35
+logging host 10.14.0.36
+logging host 10.14.203.30
+logging host 10.34.27.26
+logging trap informational
+logging source-interface Vlan10
+!
+
+access-list 10 permit 10.14.0.0 0.0.0.255
+access-list 10 permit 10.14.34.0 0.0.0.255
+access-list 10 permit 10.14.67.0 0.0.0.255
+access-list 10 permit 10.14.203.0 0.0.0.255
+access-list 10 permit 10.34.27.0 0.0.0.255
+!
+snmp-server community tencent RO 10
+ip tacacs source-interface Vlan10
+tacacs-server host 10.14.32.81 key tencent
+tacacs-server host 10.14.160.81 key tencent
+tacacs-server directed-request
+!
+!
+!
+!
+!
+control-plane
+!
+!
+banner motd #
+
+             ACCESS IS RESTRICTED TO AUTHORISED PERSONNEL ONLY
+
+             This system is equipped with a security system
+             intended to prevent and record unauthorized
+             access attempts. Unauthorised access or use
+             shall render the user liable to criminal and/or
+             civil prosecution.
+
+#
+！
+line con 0
+ logging synchronous
+ exec-timeout 10  
+line vty 0 4
+ logging synchronous
+ exec-timeout 10  
+ transport input all
+line vty 5 15
+ logging synchronous
+ exec-timeout 10  
+ transport input all
+!
+ntp server 10.14.0.136
+ntp server 10.14.198.20
+end

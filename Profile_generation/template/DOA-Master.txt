@@ -1,0 +1,441 @@
+﻿no vstack
+no service tcp-small-servers
+no service udp-small-servers
+no service finger
+no ip finger
+no service pad
+no ip source-route
+no ip domain-lookup
+no ip http server
+no ip http secure-server
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime
+service timestamps log datetime msec localtime
+service password-encryption
+lldp run
+cdp run
+!
+!
+hostname $hostname
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret admin@Workxcsdwe
+!
+username netman secret tencent@work
+aaa new-model
+!
+!
+aaa new-model
+aaa authentication login consoleloginlocal local
+line con 0
+login authentication consoleloginlocal  
+no aaa authorization console            
+aaa authentication login default group tacacs+ local
+aaa authentication dot1x default group radius
+aaa authorization exec default group tacacs+ local 
+aaa authorization commands 1 default group tacacs+ local 
+aaa authorization commands 2 default group tacacs+ local 
+aaa authorization commands 15 default group tacacs+ local 
+aaa authorization network default group radius 
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 0 default start-stop group tacacs+
+aaa accounting commands 1 default start-stop group tacacs+
+aaa accounting commands 2 default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+aaa authorization config-commands
+!
+!
+aaa session-id common
+clock timezone CST 8
+system mtu routing 1500
+vtp mode transparent
+ip subnet-zero
+ip routing
+
+no ip dhcp conflict logging 
+!
+errdisable recovery cause udld
+errdisable recovery cause bpduguard
+errdisable recovery cause security-violation
+errdisable recovery cause channel-misconfig
+errdisable recovery cause pagp-flap
+errdisable recovery cause dtp-flap
+errdisable recovery cause link-flap
+errdisable recovery cause gbic-invalid
+errdisable recovery cause psecure-violation
+errdisable recovery cause dhcp-rate-limit
+errdisable recovery cause loopback
+errdisable recovery interval 120
+!
+spanning-tree mode rapid-pvst
+spanning-tree portfast bpduguard default
+no spanning-tree optimize bpdu transmission
+spanning-tree extend system-id
+spanning-tree vlan 1-99,110-4094 priority 8192
+spanning-tree vlan 100-109 priority 16384
+!
+vlan 10 
+name MGT
+vlan 11
+name AP-MGT
+vlan 44
+name Video
+vlan 20
+name OA-1
+vlan 21
+name OA-2
+vlan 30
+name TY-1
+vlan 31
+name TY-2
+vlan 70
+name KF-1
+vlan 71
+name KF-2
+vlan 100
+name VOIP-1
+vlan 600
+name OA-Device
+!
+vlan internal allocation policy ascending
+!
+
+!
+!
+!
+interface Port-channel1
+ description CD-TX-B-BDR6FA-B-C3650-DOA-01-Po1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface range GigabitEthernet1/0/1 - 46
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ udld port aggressive 
+!
+port-channel load-balance src-dst-ip 
+!
+interface range GigabitEthernet1/0/47
+ description CD-TX-B-BDR6FA-B-C3650-DOA-01-G0/47
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ udld port aggressive 
+ channel-group 1 mode active
+!
+interface GigabitEthernet1/0/48
+ description CD-TX-B-BDR6FA-B-C3650-DOA-01-G0/48
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ udld port aggressive 
+ channel-group 1 mode active
+!
+interface GigabitEthernet1/1
+ description CD-TX-B-ODC0601-A01-C4500X-COA-01-G1/1
+ no switchport
+ no ip redirects
+ no ip unreachables 
+ ip address 10.34.2.138 255.255.255.252
+!
+interface Vlan1
+ no ip address
+ shutdown
+
+$interface_vlan
+
+
+router ospf 100
+ router-id 10.34.7.2
+ log-adjacency-changes
+ area 10.34.7.0 stub
+ passive-interface default
+ no passive-interface GigabitEthernet1/1
+ no passive-interface Vlan 10
+ network 10.34.7.2 0.0.0.0 area 10.34.7.0
+ network 10.34.10.2 0.0.0.0 area 10.34.7.0
+ network 10.34.18.2 0.0.0.0 area 10.34.7.0
+ network 10.34.17.130 0.0.0.0 area 10.34.7.0
+ network 10.34.36.2 0.0.0.0 area 10.34.7.0
+ network 10.34.37.2 0.0.0.0 area 10.34.7.0
+ network 10.34.232.2 0.0.0.0 area 10.34.7.0
+ network 10.34.233.2 0.0.0.0 area 10.34.7.0
+ network 10.34.242.2 0.0.0.0 area 10.34.7.0
+ network 10.24.243.2 0.0.0.0 area 10.34.7.0
+ network 10.34.252.2 0.0.0.0 area 10.34.7.0
+!
+ip classless
+!
+!
+ip access-list standard CL
+ permit 10.123.138.0 0.0.0.255
+ permit 10.12.220.0 0.0.0.255
+ permit 10.14.166.0 0.0.1.255
+ permit 10.14.38.0 0.0.1.255
+ permit 10.13.70.0 0.0.0.255
+ permit 10.13.78.0 0.0.0.255
+ permit 10.13.86.0 0.0.0.255
+ permit 10.22.120.0 0.0.3.255
+ permit 10.14.60.0 0.0.1.255
+ permit 10.14.90.0 0.0.0.255
+ permit 10.14.188.0 0.0.1.255
+ permit 10.3.71.0 0.0.0.255
+ permit 10.6.0.0 0.0.7.255
+ permit 10.6.8.0 0.0.1.255
+ permit 10.6.20.0 0.0.3.255
+ permit 10.6.24.0 0.0.0.255
+ permit 10.6.120.0 0.0.0.255
+ permit 10.18.0.0 0.0.15.255
+ permit 10.18.16.0 0.0.0.255
+ permit 10.18.20.0 0.0.3.255
+ permit 10.19.3.0 0.0.0.255
+ permit 10.16.0.0 0.0.15.255
+ permit 10.16.16.0 0.0.0.255
+ permit 10.16.20.0 0.0.3.255
+ permit 10.30.0.0 0.0.0.255
+ permit 10.30.12.0 0.0.3.255
+ permit 10.30.16.0 0.0.1.255
+ permit 10.30.18.0 0.0.0.255
+ permit 10.30.28.0 0.0.3.255
+ permit 10.0.6.0 0.0.1.255
+ permit 10.0.8.0 0.0.0.255
+ permit 10.26.0.0 0.0.31.255
+ permit 10.32.0.0 0.0.15.255
+ permit 10.32.16.0 0.0.3.255
+ permit 10.32.21.0 0.0.0.255
+ permit 10.32.22.0 0.0.0.255
+ permit 10.75.1.0 0.0.0.255
+ permit 10.75.2.0 0.0.0.255
+ permit 10.75.3.0 0.0.0.255
+ permit 10.0.130.0 0.0.1.255
+ permit 10.22.0.0 0.0.0.255
+ permit 10.0.128.0 0.0.1.255
+ permit 10.1.159.0 0.0.0.255
+ permit 10.0.132.0 0.0.3.255
+ permit 10.24.0.0 0.0.0.255
+ permit 10.25.0.0 0.0.0.255
+ permit 10.7.1.0 0.0.0.255
+ permit 10.7.2.0 0.0.0.255
+ permit 10.7.20.0 0.0.0.255
+ permit 10.7.40.0 0.0.0.255
+ permit 10.20.0.0 0.0.31.255
+ permit 10.34.0.0 0.0.7.255
+ permit 10.82.0.0 0.0.3.255
+ permit 10.33.0.0 0.0.7.255
+ permit 10.33.8.0 0.0.0.255
+ permit 10.9.72.0 0.0.0.255
+ permit 10.9.103.192 0.0.0.63
+ permit 10.9.100.0 0.0.0.255
+ permit 10.14.67.0 0.0.0.255
+!
+ip access-list extended KF
+200 permit icmp any any
+210 permit udp any eq bootps any
+220 permit udp any any eq bootpc
+230 permit udp any eq domain any
+240 permit udp any any eq ntp
+250 deny tcp any any range 1 1024
+260 deny udp any any range 1 1024
+270 permit ip 10.120.0.0 0.7.255.255 any
+280 permit ip 10.6.253.0 0.0.0.255 any
+290 permit ip 10.33.25.0 0.0.0.255 any
+300 permit ip 10.6.255.0 0.0.0.255 any
+310 permit ip 10.84.2.0 0.0.0.255 any
+320 permit ip 10.85.0.0 0.0.255.255 any
+330 permit ip 10.48.0.0 0.15.255.255 any
+340 permit ip 10.32.192.0 0.0.31.255 any
+350 permit ip 10.10.64.0 0.0.63.255 any
+360 permit ip 10.13.64.0 0.0.63.255 any
+370 permit ip 10.17.0.0 0.0.95.255 any
+380 permit ip 10.14.0.0 0.0.255.255 any
+390 permit ip 10.15.0.0 0.0.255.255 any
+400 permit ip 10.28.0.0 0.0.255.255 any
+410 permit ip 10.6.12.0 0.0.3.255 any
+420 permit ip 10.6.11.0 0.0.0.255 any
+430 permit ip 10.6.16.0 0.0.0.255 any
+440 permit ip 10.6.18.0 0.0.1.255 any
+450 permit ip 10.6.206.0 0.0.1.255 any
+460 permit ip 10.6.208.0 0.0.1.255 any
+470 permit ip 10.11.32.0 0.0.0.255 any
+480 permit ip 10.11.56.0 0.0.0.255 any
+490 permit ip 10.6.234.0 0.0.0.255 any
+500 permit ip 10.6.220.0 0.0.0.255 any
+510 permit ip 10.1.164.0 0.0.0.255 any
+520 permit ip 10.1.128.0 0.0.31.255 any
+530 permit ip 10.1.252.0 0.0.0.255 any
+540 permit ip 10.20.200.0 0.0.7.255 any
+550 permit ip 10.7.10.0 0.0.1.255 any
+560 permit ip 10.7.12.0 0.0.1.255 any
+570 permit ip 10.7.124.0 0.0.0.255 any
+580 permit ip 10.7.4.224 0.0.0.7 any
+590 permit ip 10.20.20.0 0.0.0.255 any
+600 permit ip 10.20.32.0 0.0.0.255 any
+610 permit ip 10.1.168.0 0.0.0.255 any
+620 permit ip 10.12.0.0 0.0.255.255 any
+630 permit ip 10.120.0.0 0.3.255.255 any
+640 permit ip 10.1.136.16 0.0.0.15 any
+650 permit ip 10.1.136.64 0.0.0.15 any
+660 permit ip 10.1.152.0 0.0.0.127 any
+670 permit ip 10.1.152.128 0.0.0.127 any
+680 permit ip 10.1.153.0 0.0.0.127 any
+690 permit ip 10.1.153.128 0.0.0.127 any
+700 permit ip 10.1.154.0 0.0.0.127 any
+710 permit ip 10.1.154.128 0.0.0.127 any
+720 permit ip 10.1.155.0 0.0.0.127 any
+730 permit ip 10.1.155.128 0.0.0.127 any
+740 permit ip 10.1.156.0 0.0.0.255 any
+750 permit ip 10.1.162.0 0.0.0.255 any
+760 permit ip 10.1.163.0 0.0.0.255 any
+770 permit ip 10.6.206.0 0.0.0.127 any
+780 permit ip 10.6.206.128 0.0.0.63 any
+790 permit ip 10.6.206.192 0.0.0.63 any
+800 permit ip 10.6.207.0 0.0.0.255 any
+810 permit ip 10.6.208.0 0.0.0.255 any
+820 permit ip 10.6.209.0 0.0.0.255 any
+830 permit ip 10.6.222.0 0.0.0.255 any
+840 permit ip 10.6.223.0 0.0.0.255 any
+850 permit ip 10.34.112.0 0.0.15.255 any
+860 permit ip 10.34.128.0 0.0.31.255 any
+870 permit ip 10.34.26.0 0.0.1.255 any
+880 permit ip 10.34.28.0 0.0.0.255 any
+890 permit ip 10.93.0.0 0.0.3.255 any
+900 permit tcp 10.96.208.0 0.0.1.255 any eq 3389 5900
+910 permit tcp 10.96.252.0 0.0.1.255 any eq 3389 5900
+920 permit tcp 10.96.154.0 0.0.1.255 any eq 3389 5900
+930 permit tcp 10.97.32.0 0.0.3.255 any eq 3389 5900 
+940 permit tcp 10.90.0.0 0.0.127.255 any eq 3389 5900
+950 deny   tcp 10.7.124.0 0.0.0.255 eq 8080 any
+960 deny   tcp 10.7.59.0 0.0.0.255 eq 8080 any
+970 deny   tcp 10.20.204.0 0.0.0.255 eq 8080 any
+980 permit ip 10.32.128.0 0.31.63.255 any
+990 permit ip 10.17.0.0 0.14.95.255 any
+1000 permit ip 10.6.210.0 0.0.0.255 any
+1010 permit ip 10.6.221.0 0.0.0.255 any
+1020 permit ip 10.6.222.0 0.0.1.255 any
+1030 permit ip 10.6.190.0 0.0.0.255 any
+1040 permit ip 10.6.193.0 0.0.0.255 any
+1050 permit ip 10.6.197.0 0.0.0.255 any
+1060 permit ip 10.6.198.0 0.0.0.255 any
+1070 permit ip 10.6.188.0 0.0.0.255 any
+1080 permit ip 10.6.224.0 0.0.0.255 any
+1090 permit ip 10.12.16.0 0.0.7.255 any
+1100 permit ip 10.6.188.0 0.0.3.255 any
+1110 permit ip 10.6.192.0 0.0.7.255 any
+1120 permit ip 10.11.64.0 0.0.7.255 any
+1130 permit ip 10.11.40.0 0.0.7.255 any
+1140 permit ip 10.11.0.0 0.0.255.255 any
+1150 permit ip 10.9.128.0 0.0.0.255 any
+1160 permit ip 10.24.32.0 0.0.7.255 any
+1170 permit ip 10.24.40.0 0.0.3.255 any
+1180 permit ip 10.24.248.0 0.0.7.255 any
+1190 permit ip 10.1.160.0 0.0.3.255 any
+1200 permit ip 10.7.4.240 0.0.0.7 any
+1210 permit ip 10.7.59.0 0.0.0.255 any
+1220 permit ip 10.7.20.0 0.0.0.255 any
+1230 permit ip 10.7.1.0 0.0.0.255 any
+1240 permit ip 10.7.50.0 0.0.0.255 any
+1250 permit ip 10.7.40.0 0.0.0.255 any
+1260 permit ip 10.7.254.0 0.0.0.255 any
+1270 permit ip 10.7.250.0 0.0.0.255 any
+1280 permit ip 10.128.0.0 0.127.255.255 any
+1290 permit ip 172.30.6.0 0.0.0.255 any
+1300 deny   ip 172.30.0.0 0.0.255.255 any
+1310 permit ip 172.16.0.0 0.15.255.255 any
+1320 permit ip 192.168.0.0 0.0.255.255 any
+1330 permit ip 10.100.0.0 0.3.255.255 any
+1340 permit ip 10.104.0.0 0.7.255.255 any
+1350 permit ip 10.112.0.0 0.15.255.255 any
+1360 deny   ip 10.0.0.0 0.127.255.255 any
+1370 permit ip any any
+!
+ip access-list extended OA
+ permit icmp any any
+ permit udp any eq bootpc any
+ permit udp any any eq bootps
+ permit udp any any eq domain
+ permit udp any eq ntp any
+ deny   tcp any range 1 1024 any
+ deny   udp any range 1 1024 any
+ deny   tcp any eq 3389 any
+ deny   tcp any host 10.14.40.10 eq www 443 22
+ deny   tcp any host 10.20.204.12 eq www 443 22
+ deny   tcp any host 10.33.25.35 eq www 443 22
+ deny   tcp any host 10.1.160.79 eq www 443 22
+ deny   tcp any host 10.1.156.28 eq www 443 22
+ deny   tcp any host 10.6.19.29 eq www 443 22
+ deny   tcp any 10.14.131.0 0.0.0.255 eq www 443 1494 2598
+ deny   tcp any 10.14.145.0 0.0.0.255 eq www 443 1494 2598
+ deny   tcp any 10.14.17.0 0.0.0.255 eq www 443 1494 2598
+ deny   tcp any 10.14.3.0 0.0.0.255 eq www 443 1494 2598
+ deny   tcp any 172.17.131.0 0.0.0.63 eq www 443 1494 2598
+ deny   tcp any host 10.14.40.17 eq www 443 22
+ permit ip any any
+!
+ip access-list extended TY
+ permit icmp any any
+ permit udp any eq bootpc any
+ permit udp any any eq bootps
+ permit udp any any eq domain
+ permit udp any eq ntp any
+ deny   ip any 10.0.0.0 0.255.255.255
+ deny   ip any 172.16.0.0 0.15.255.255
+ deny   ip any 192.168.0.0 0.0.255.255
+ deny   ip any 9.0.0.0 0.255.255.255
+ deny   ip any 100.64.0.0 0.63.255.255
+ permit ip any any
+!         
+
+logging console
+logging buffered 40960 informational
+logging origin-id hostname
+logging facility local2
+logging host 10.16.2.8
+logging host 10.16.2.9
+logging host 10.14.67.158
+logging trap informational
+logging source-interface Vlan10
+!
+access-list 10 permit 10.16.2.0 0.0.0.255
+access-list 10 permit 172.30.14.0 0.0.0.31
+access-list 10 permit 10.14.34.0 0.0.0.255
+access-list 10 permit 10.14.67.0 0.0.0.255
+access-list 10 permit 10.14.195.0 0.0.0.255
+!
+snmp-server community tencent RO 10
+ip tacacs source-interface Vlan10
+tacacs-server host 10.14.32.81 key tencent
+tacacs-server host 10.14.160.81 key tencent
+tacacs-server directed-request
+!
+control-plane
+!
+banner motd #
+
+             ACCESS IS RESTRICTED TO AUTHORISED PERSONNEL ONLY
+
+             This system is equipped with a security system
+             intended to prevent and record unauthorized
+             access attempts. Unauthorised access or use
+             shall render the user liable to criminal and/or
+             civil prosecution.
+
+#
+!
+line con 0
+ logging synchronous
+ exec-timeout 10  
+line vty 0 4
+ logging synchronous
+ exec-timeout 10 
+ access-class CL in
+ transport input all
+line vty 5 15
+ logging synchronous
+ exec-timeout 10 
+ access-class CL in
+ transport input all
+!
+ntp server 10.14.0.136
+ntp server 10.14.198.20
+

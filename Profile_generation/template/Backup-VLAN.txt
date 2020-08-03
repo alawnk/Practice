@@ -1,0 +1,10 @@
+
+interface vlan $vlan_num
+description $vlan_name
+ip address $backup_gateway $mask
+ip access-group $acl in
+standby version 2
+standby $vlan_num ip $v_gateway
+standby $vlan_num priority 100
+standby $vlan_num peempt
+!
