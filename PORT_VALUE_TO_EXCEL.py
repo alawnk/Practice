@@ -1,24 +1,49 @@
 import os
-import pandas as pd
-PATH = 'C:/Users/alawn/Desktop/DZ_Traffice/'
-NEW_PATH = 'C:/Users/alawn/Desktop/DZ_TEST/'
-def write_excel():
-    for root,dir,files in os.walk(PATH):                                                       #遍历获取数据txt文件
-        for file in files:                                                                    #获取单个文件
-            WRITE_EXCEL = pd.ExcelWriter(NEW_PATH+file+'.xlsx')                               #定义要写入的excel文件
-            with open(PATH+file) as F:                                                        #打开txt文件
-                FILE_CONTENT = eval(F.read())                                                 #提取数据类型
-                PORT_VALUE_LIST = FILE_CONTENT['data']                                        #根据key获取数据
-                KEYS = PORT_VALUE_LIST.keys()                                                 #获取key列表
-                sheet_num = []                                                                #定义文件名称
-                for n  in range (1,len(KEYS)+1):
-                    sheet_num.append(n)
-                for key in KEYS:                                                              #遍历key列表
-                    if sheet_num != []:                                                       #检查文件名列表是否为空
-                        port = pd.DataFrame(PORT_VALUE_LIST[key])
-                        port.insert(loc=0,column='Port',value=key)                            #excel表格中插入PORT字段
-                        port.to_excel(WRITE_EXCEL,sheet_name=('port'+str(sheet_num.pop(0))),index=None)   #写入excel文件
-                    else:
-                        pass
-            WRITE_EXCEL.save()
-write_excel()
+import queue
+import threading
+import openpyxl
+POST_FILE = '/Volumes/Mac OS DATA/EB_POST_RES/'
+
+
+
+myq = queue.Queue()
+for root, dir, files in os.walk(POST_FILE):
+    for file in files:
+        myq.put(file)
+
+WORKBOOK = openpyxl.Workbook()
+WORKSHEET = WORKBOOK.create_sheet('max_traffic')
+WORKSHEET.append(['设备名称','端口','流量'])
+
+def get_max_traffic():
+    while True:
+        try:
+            info = myq.get(block=False)
+            with open(POST_FILE+info) as taffic_file:
+                file_dict = eval(taffic_file.read())
+                traffic_data = file_dict['data']
+                KEYS = traffic_data.keys()
+                for key in KEYS:
+                    traffic_value = traffic_data[key]
+                    value_list = []
+                    for value in traffic_value:
+                        value_list.append(value['in_traffic'])
+                    data = info,key,max(value_list)
+                    WORKSHEET.append(data)
+        except queue.Empty:
+            break
+
+thread_arr = []
+
+num_thread = 20
+
+for i in range (num_thread):
+        t = threading.Thread(target = get_max_traffic,kwargs={})
+        t.setDaemon(True)
+        t.start()
+        thread_arr.append(t)
+
+for i in range(num_thread):
+        thread_arr[i].join()
+
+WORKBOOK.save('/Volumes/Mac OS DATA/max_traffic.xlsx')
