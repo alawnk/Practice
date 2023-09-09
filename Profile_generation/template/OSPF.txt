@@ -1,6 +1,0 @@
-router ospf 100
-router-id $router-id
-passive-interface default
-no passive-interface $interface-vlan
-no passive-interface $interface-port
-netwrok $network area $area 
